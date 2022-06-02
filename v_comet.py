@@ -1,4 +1,4 @@
-# V-COMET method
+# V-VCOMET method
 
 from itertools import product
 import numpy as np
@@ -9,12 +9,13 @@ from pyrepo_mcda.additions import rank_preferences
 from mcda_method  import MCDA_method
 
 
-class COMET(MCDA_method):
-    def __init__(self):
+class VCOMET(MCDA_method):
+    def __init__(self, normalization_method = None, v = 0.5):
         """
-        Create the COMET method object
+        Create the VCOMET method object
         """
-        pass
+        self.v = v
+        self.normalization_method = normalization_method
 
 
     def __call__(self, matrix, weights, types):
@@ -35,17 +36,17 @@ class COMET(MCDA_method):
         --------
             ndrarray, ndarray
                 Vector containing preference value of each alternative. 
-                In COMET method the best alternative has the highest preference value.
+                In VCOMET method the best alternative has the highest preference value.
 
                 Vector containing ranking of alternatives based on preference values sorted in descending order.
 
         Examples
         ----------
-        >>> comet = COMET()
-        >>> pref, rank = comet(matrix, weights, criteria_types)
+        >>> VCOMET = VCOMET()
+        >>> pref, rank = VCOMET(matrix, weights, criteria_types)
         """
-        COMET._verify_input_data(matrix, weights, types)
-        return COMET._comet(self, matrix, weights, types)
+        VCOMET._verify_input_data(matrix, weights, types)
+        return VCOMET._vcomet(self, matrix, weights, types, self.normalization_method, self.v)
 
 
     def _tfn(self, x, a, m, b):
@@ -87,16 +88,15 @@ class COMET(MCDA_method):
 
 
     @staticmethod
-    def _comet(self, matrix, weights, types):
+    def _vcomet(self, matrix, weights, types, normalization_method, v):
         # generate characteristic values
         cv = self._get_characteristic_values(matrix)
-        # generate characteristic objects values based on the criteria values
-        # generate matrix with COs using
-        # cartesian product of characteristic values for all criteria
+        # generate matrix with characteristic objects values using cartesian product of 
+        # characteristic values for all criteria
         co = product(*cv)
         co = np.array(list(co))
         # calculate vector SJ using VIKOR method
-        vikor = VIKOR()
+        vikor = VIKOR(normalization_method = normalization_method, v = v)
         sj = vikor(co, weights, types)
 
         # calculate vector P

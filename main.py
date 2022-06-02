@@ -5,7 +5,7 @@ import pandas as pd
 
 # import required supporting methods from other libraries
 from objective_weighting import weighting_methods as mcda_weights
-from v_comet import COMET
+from v_comet import VCOMET
 
 
 def main():
@@ -43,8 +43,8 @@ def main():
         elif weight_type == 'CRITIC':
             weights = mcda_weights.critic_weighting(matrix)
 
-        comet = COMET()
-        pref, _ = comet(matrix, weights, criteria_types)
+        vcomet = VCOMET(normalization_method = None, v = 0.5)
+        pref, _ = vcomet(matrix, weights, criteria_types)
         scores['P' + str(el + 1)] = pref
 
     #
@@ -62,7 +62,7 @@ def main():
     elif weight_type == 'CRITIC':
         weights = mcda_weights.critic_weighting(matrix)
 
-    pref, rank = comet(matrix, weights, criteria_types)
+    pref, rank = vcomet(matrix, weights, criteria_types)
 
     df_writer['V-COMET pref'] = pref
     df_writer['V-COMET rank'] = rank
