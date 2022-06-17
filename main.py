@@ -12,8 +12,8 @@ def main():
     # main
     # choose year
     year = '2019'
-    # choose type of dataset: absolute or relative
-    dataset = 'absolute'
+    # choose type of dataset: absolute, relative or population
+    dataset = 'population'
     file = 'dataset/RES_EU_' + year + '_' + dataset + '.csv'
     data = pd.read_csv(file)
 
